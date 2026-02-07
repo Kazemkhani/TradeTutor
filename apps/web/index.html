@@ -3083,7 +3083,11 @@
                     if (track.kind === 'audio') {
                         const audioEl = track.attach();
                         audioEl.id = 'agent-audio';
+                        audioEl.autoplay = true;
+                        audioEl.playsInline = true;
                         document.body.appendChild(audioEl);
+                        // Ensure audio plays (handle autoplay restrictions)
+                        audioEl.play().catch(e => console.log('Audio autoplay blocked:', e));
                         voiceCircle.classList.add('agent-speaking');
                     }
                 });
