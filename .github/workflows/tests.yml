@@ -1,0 +1,45 @@
+name: Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install uv
+      uses: astral-sh/setup-uv@v1
+      with:
+        version: "latest"
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.12"
+
+    - name: Install dependencies
+      run: UV_GIT_LFS=1 uv sync --all-packages --dev
+
+    - name: Run shared package tests
+      run: uv run pytest packages/shared/tests -v
+
+    - name: Run context builder tests
+      run: uv run pytest packages/context_builder/tests -v
+
+    - name: Run voice agent tests
+      env:
+        LIVEKIT_URL: ${{ secrets.LIVEKIT_URL }}
+        LIVEKIT_API_KEY: ${{ secrets.LIVEKIT_API_KEY }}
+        LIVEKIT_API_SECRET: ${{ secrets.LIVEKIT_API_SECRET }}
+        VOICE_AGENT_LLM_MODEL: "anthropic/claude-sonnet-4.5-20250929"
+        VOICE_AGENT_STT_MODEL: "assemblyai/universal-streaming"
+        VOICE_AGENT_TTS_MODEL: "cartesia/sonic-3"
+        VOICE_AGENT_VOICE_ID: "9626c31c-bec5-4cca-baa8-f8ba9e84c8bc"
+        VOICE_AGENT_LANGUAGE: "en"
+      run: uv run pytest packages/voice_agent/tests -v

@@ -1,0 +1,136 @@
+version: "3"
+output: interleaved
+dotenv: [".env.local"]
+
+vars:
+  AGENT_DIR: .  # Root directory - uses src/agent.py with full SIP dialing support
+  API_DIR: apps/api
+  WEB_DIR: apps/web
+
+tasks:
+  # ============================================
+  # Voice Agent Commands
+  # ============================================
+  agent:download:
+    desc: "Download required models (VAD, turn detector)"
+    dir: "{{.AGENT_DIR}}"
+    cmds:
+      - uv run python src/agent.py download-files
+
+  agent:console:
+    desc: "Run agent in console mode (talk directly in terminal)"
+    dir: "{{.AGENT_DIR}}"
+    interactive: true
+    cmds:
+      - uv run python src/agent.py console
+
+  agent:dev:
+    desc: "Run agent in development mode"
+    dir: "{{.AGENT_DIR}}"
+    interactive: true
+    cmds:
+      - uv run python src/agent.py dev
+
+  agent:start:
+    desc: "Run agent in production mode"
+    dir: "{{.AGENT_DIR}}"
+    cmds:
+      - uv run python src/agent.py start
+
+  # ============================================
+  # API Commands
+  # ============================================
+  api:dev:
+    desc: "Run FastAPI in development mode (port 8000)"
+    dir: "{{.API_DIR}}"
+    interactive: true
+    cmds:
+      - uv run uvicorn api.main:app --reload --port 8000
+
+  api:start:
+    desc: "Run FastAPI in production mode"
+    dir: "{{.API_DIR}}"
+    cmds:
+      - uv run uvicorn api.main:app --host 0.0.0.0 --port 8000
+
+  # ============================================
+  # Web Commands
+  # ============================================
+  web:dev:
+    desc: "Serve web form locally (port 3000)"
+    dir: "{{.WEB_DIR}}"
+    interactive: true
+    cmds:
+      - uv run python -m http.server 3000
+
+  # ============================================
+  # Development Utilities
+  # ============================================
+  install:
+    desc: "Install all packages in workspace"
+    cmds:
+      - uv sync --all-packages
+
+  test:
+    desc: "Run all tests"
+    cmds:
+      - uv run pytest
+
+  test:agent:
+    desc: "Run voice agent tests only"
+    dir: "{{.AGENT_DIR}}"
+    cmds:
+      - uv run pytest
+
+  test:shared:
+    desc: "Run shared package tests only"
+    cmds:
+      - uv run pytest packages/shared/tests
+
+  lint:
+    desc: "Run ruff linter on all code"
+    cmds:
+      - uv run ruff check .
+
+  lint:fix:
+    desc: "Run ruff linter and fix issues"
+    cmds:
+      - uv run ruff check --fix .
+
+  format:
+    desc: "Format all code with ruff"
+    cmds:
+      - uv run ruff format .
+
+  format:check:
+    desc: "Check code formatting without changes"
+    cmds:
+      - uv run ruff format --check .
+
+  # ============================================
+  # Full Stack Development
+  # ============================================
+  dev:
+    desc: "Run agent in development mode (legacy command)"
+    dir: "{{.AGENT_DIR}}"
+    interactive: true
+    cmds:
+      - uv run python src/agent.py dev
+
+  # ============================================
+  # Template Commands (for LiveKit templates)
+  # ============================================
+  post_create:
+    desc: "Runs after this template is instantiated"
+    cmds:
+      - echo 'AI Lead Qualification System initialized!'
+      - echo ''
+      - echo 'Quick start:'
+      - echo '  task install          # Install all packages'
+      - echo '  task agent:download   # Download ML models'
+      - echo '  task agent:console    # Talk to your agent'
+      - echo ''
+      - echo 'Run full stack:'
+      - echo '  task api:dev          # Start API (port 8000)'
+      - echo '  task web:dev          # Start web form (port 3000)'
+      - echo '  task agent:dev        # Start voice agent'

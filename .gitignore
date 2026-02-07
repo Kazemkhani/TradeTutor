@@ -1,0 +1,23 @@
+.env
+.env.*
+!.env.example
+.DS_Store
+__pycache__
+.idea
+KMS
+.venv
+.vscode
+*.egg-info
+.pytest_cache
+.ruff_cache
+
+# Internal AI tool config (not for repo)
+CLAUDE.md
+CLAUDE.local.md
+.claude/agents/
+.claude/rules/
+
+# SSH keys
+ssh key for UOBD FYP
+ssh key for UOBD FYP .pub
+ssh key for UOBD FYP *

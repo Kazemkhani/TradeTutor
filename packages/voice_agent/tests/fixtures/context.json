@@ -1,0 +1,30 @@
+{
+  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "created_at": "2024-01-15T10:30:00Z",
+
+  "owner_email": "owner@acme.com",
+  "phone": "+14155551234",
+  "name": "John Doe",
+  "lead_company": "TechCorp",
+  "lead_title": "VP of Sales",
+  "product": "Enterprise Widget Suite",
+  "goal": "book_meeting",
+  "booking_link": "https://cal.com/acme/demo",
+
+  "agent_instructions": "You are a professional sales representative for Acme Corp. Your goal is to qualify the lead and book a demo meeting. Be courteous, ask qualifying questions, and handle objections gracefully. If the lead is interested, offer to send them a booking link via email.",
+  "opening_line": "Hi, may I speak with John Doe? I understand you're at TechCorp. I'm calling about Enterprise Widget Suite.",
+  "qualification_questions": [
+    "What is your current solution for widget management?",
+    "How many widgets does your team manage on a typical day?",
+    "What is your timeline for making a decision?",
+    "Who else is involved in this decision?"
+  ],
+  "objection_handlers": {
+    "too_expensive": "I understand budget is important. Let me explain our ROI - most customers see 3x return within the first year through efficiency gains.",
+    "need_to_think": "Of course, this is an important decision. What specific aspects would you like to think through? I'd be happy to provide more information.",
+    "using_competitor": "That's great that you have a solution in place. Many of our customers switched from similar solutions. What's working well for you, and what could be better?"
+  },
+  "closing_script": "Great! I'll email you the booking link so you can schedule at your convenience. You should receive it shortly.",
+  "should_email_lead": true,
+  "lead_email_template": "booking"
+}
