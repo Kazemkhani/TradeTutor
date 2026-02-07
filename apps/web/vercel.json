@@ -1,0 +1,12 @@
+{
+  "rewrites": [
+    {
+      "source": "/calls",
+      "destination": "https://tradetutor-api-production.up.railway.app/calls"
+    },
+    {
+      "source": "/token",
+      "destination": "https://tradetutor-api-production.up.railway.app/token"
+    }
+  ]
+}
