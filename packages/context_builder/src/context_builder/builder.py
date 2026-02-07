@@ -248,6 +248,36 @@ Be respectful of their time. Focus on collecting accurate information."""
             if request.goal_criteria:
                 instructions += f"\n\nInformation to collect: {request.goal_criteria}"
 
+        elif request.goal == CallGoal.TRADE_EDUCATION:
+            # Personalized Trading Education Tutor
+            instructions = f"""You are TradeTutor, an expert trading education AI designed to teach {request.product or 'trading concepts'} to traders of all levels.
+
+OBJECTIVE: Assess the learner's knowledge level and deliver personalized trading education.
+
+PHASE 1 - DISCOVERY (GreetingAgent):
+- Welcome them warmly to TradeTutor
+- Ask what they want to learn today (options, futures, forex, crypto, technical analysis, etc.)
+- Assess their current experience level (beginner/intermediate/advanced)
+
+PHASE 2 - LEVEL ASSESSMENT (DiscoveryAgent):
+For beginners: "Have you ever placed a trade before? Do you understand bid/ask spreads?"
+For intermediate: "Tell me about your current trading strategy. What indicators do you use?"
+For advanced: "What's your experience with derivatives? Greeks? Risk management?"
+
+PHASE 3 - PERSONALIZED TEACHING (PitchAgent):
+- Adapt your explanation complexity to their assessed level
+- Use analogies for beginners (e.g., "options are like insurance on a stock")
+- Use technical terms for advanced traders
+- Give concrete examples with real scenarios
+
+PHASE 4 - KNOWLEDGE CHECK (CloseAgent):
+- Ask ONE quiz question to verify understanding
+- If they get it right: Congratulate and offer the next concept
+- If they get it wrong: Re-explain with a different approach
+
+TONE: Patient, encouraging, but intellectually rigorous. Never talk down to them."""
+            if request.context:
+                instructions += f"\n\nFOCUS TOPICS:\n{request.context}"
         else:  # QUALIFY_INTEREST
             instructions = f"""You are a professional representative for {request.product}.
 
@@ -285,6 +315,10 @@ Be professional and consultative. Focus on understanding their needs."""
         if request.goal == CallGoal.CLOSE_SALE:
             # More direct, value-focused opening
             return f"{greeting}{company_mention} I'm calling about {request.product} - we help businesses like yours achieve better results. Do you have 2 minutes?"
+        elif request.goal == CallGoal.TRADE_EDUCATION:
+            # Friendly tutor opening
+            name_part = f", {lead.name}" if lead.name else ""
+            return f"Welcome to TradeTutor{name_part}! I'm your personal trading education AI. What would you like to learn about today - options, technical analysis, risk management, or something else?"
         else:
             return f"{greeting}{company_mention} I'm calling about {request.product}."
 
@@ -297,6 +331,13 @@ Be professional and consultative. Focus on understanding their needs."""
             # Minimal discovery for close_sale - focus on closing
             questions = [
                 "What's your biggest challenge in this area right now?",
+            ]
+        elif request.goal == CallGoal.TRADE_EDUCATION:
+            # Level assessment questions for trading education
+            questions = [
+                "How long have you been trading, and what markets do you trade?",
+                "What's your current understanding of this topic on a scale of 1 to 10?",
+                "What specific aspect are you finding challenging?",
             ]
         elif request.goal == CallGoal.BOOK_MEETING:
             questions = [
@@ -341,6 +382,15 @@ Be professional and consultative. Focus on understanding their needs."""
                 handlers["hesitation"] = (
                     f"Just so you know - {request.urgency_hook}. I'd hate for you to miss out."
                 )
+        elif request.goal == CallGoal.TRADE_EDUCATION:
+            # Education-focused responses
+            handlers = {
+                "too_complex": "No worries! Let me break that down differently. Think of it this way...",
+                "confused": "Great question! Confusion is part of learning. Let me use a simpler analogy...",
+                "wrong_answer": "Not quite, but you're on the right track! Let me explain why the answer is actually...",
+                "want_different_topic": "Absolutely! We can switch topics anytime. What else interests you?",
+                "overwhelmed": "Let's slow down. Trading can feel overwhelming at first. Let's focus on just one concept...",
+            }
         else:
             # Standard handlers for other goals
             handlers = {
@@ -361,6 +411,8 @@ Be professional and consultative. Focus on understanding their needs."""
             return "Perfect! I'll send the payment link to your email right away. You should receive it within a minute. Any questions before I let you go?"
         elif request.goal == CallGoal.BOOK_MEETING and request.booking_link:
             return "Great! I'll email you the booking link so you can schedule at your convenience. You should receive it shortly."
+        elif request.goal == CallGoal.TRADE_EDUCATION:
+            return "Great session! You've learned about the key concepts we discussed. Remember: practice with paper trading before risking real capital. Call back anytime to learn more - I'm always here to help you become a better trader!"
         elif request.goal == CallGoal.QUALIFY_INTEREST:
             return "Thank you for your time today. Based on our conversation, I'll have our team follow up with more information."
         elif request.goal == CallGoal.COLLECT_INFO:

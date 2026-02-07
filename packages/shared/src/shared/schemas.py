@@ -42,6 +42,7 @@ class CallGoal(str, Enum):
     QUALIFY_INTEREST = "qualify_interest"
     COLLECT_INFO = "collect_info"
     CLOSE_SALE = "close_sale"
+    TRADE_EDUCATION = "trade_education"  # Personalized trading education tutor
 
 
 class AgentStyle(str, Enum):
