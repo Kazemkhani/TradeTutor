@@ -2844,7 +2844,7 @@
                 if (state.data.urgency_hook) payload.urgency_hook = state.data.urgency_hook;
                 if (state.data.goal_criteria) payload.goal_criteria = state.data.goal_criteria;
 
-                const res = await fetch('https://novalabs.ae/calls', {
+                const res = await fetch('http://localhost:8000/calls', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
@@ -3051,7 +3051,7 @@
                 voiceStatus.textContent = 'Getting token...';
 
                 // Get token from API
-                const tokenRes = await fetch('https://novalabs.ae/token', {
+                const tokenRes = await fetch('http://localhost:8000/token', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
